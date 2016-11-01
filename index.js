@@ -16,6 +16,10 @@ mongoose.connect(db_url, function(err) {
 	}
 });
 
+app.get('/', function(req, res) {
+	res.sendStatus(200); 	// Used to check for health
+});
+
 app.post('/create/:inviter/:invitee', function(req, res) {
 	invite_data = {inviter: req.params.inviter, invitee: req.params.invitee, accepted: false};
 	var newInvite = new schema.Invite(invite_data);
