@@ -96,11 +96,7 @@ app.get('/invitations', function(req, res) {
 		if (err) {
 			res.sendStatus(500);
 		} else {
-			var all_invites = []
-			for (i of invites) {
-				all_invites.push(JSON.stringify(i));
-			}
-			res.send(all_invites);
+			res.send(JSON.stringify(res););
 		}
 	});
 });
