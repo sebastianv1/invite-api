@@ -5,7 +5,8 @@ var schema = require('./schema');
 var mongoose = require('mongoose');
 var db_url = process.env.MONGODB_URI || "mongodb://localhost:27017/referrals";
 
-var request = require('request');
+var mailer = require('nodemailer');
+var transporter = mailer.createTransport('smtps://gigstermailing%40gmail.com:commonkey@smtp.gmail.com');
 
 mongoose.connect(db_url, function(err) {
 	if (err) {
@@ -22,6 +23,11 @@ app.get('/', function(req, res) {
 
 app.post('/create/:inviter/:invitee', function(req, res) {
 	invite_data = {inviter: req.params.inviter, invitee: req.params.invitee, accepted: false};
+	if (req.params.invitee.indexOf("@") > -1) {
+		invite_data["email"] = true;
+	} else {
+		invite_data["email"] = false;
+	}
 	var newInvite = new schema.Invite(invite_data);
 	newInvite.save(function(err, data) {
 		if (err) {
@@ -38,10 +44,24 @@ app.post('/sendEmailInvite/:invite_id', function(req, res) {
 			console.log(err);
 			res.send(500);			// TODO: Implement formal error codes. Might just be able to send err from callback
 		} else {
-			// TODO: Implement sending email invite
-		}
-	});
-	res.send(200);
+			var body_text = "From: " + invite.inviter + "\nYou should join Gigster today!";
+			var mailOptions = {
+    			to: invite.invitee, 
+    			subject: 'Join Gigster!',
+    			text: body_text,
+			};
+			transporter.sendMail(mailOptions, function(error, info) {
+   				if (error) {
+   					console.log("Error sending email" + error);
+   					res.send(500);
+   				} else {
+        			console.log(info);
+        			res.send(200)
+   				}
+
+   			});
+   		}
+    });
 });
 
 app.post('/sendSMSInvite/:invite_id', function(req, res) {
