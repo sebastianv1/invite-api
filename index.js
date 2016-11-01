@@ -44,11 +44,11 @@ app.post('/sendEmailInvite/:invite_id', function(req, res) {
 			console.log(err);
 			res.send(500);			// TODO: Implement formal error codes. Might just be able to send err from callback
 		} else {
-			var body_text = "From: " + invite.inviter + "\nYou should join Gigster today!";
+			var body_html = invite.inviter + ' has invited you to Gigster! Accept the inviation by clicking <a href="/acceptInvite/"' + invite._id + '">here</a>';
 			var mailOptions = {
     			to: invite.invitee, 
     			subject: 'Join Gigster!',
-    			text: body_text,
+    			html: body_html
 			};
 			transporter.sendMail(mailOptions, function(error, info) {
    				if (error) {
@@ -71,9 +71,10 @@ app.post('/sendSMSInvite/:invite_id', function(req, res) {
 			res.send(500);			// TODO: Implement formal error codes. Might just be able to send err from callback
 		} else {
 			// TODO: Implement sending SMS invite
+			res.send(200);
 		}
 	});
-	res.send(200);
+	
 });
 
 app.post('/acceptInvite/:invide_id', function(req, res) {
@@ -84,9 +85,9 @@ app.post('/acceptInvite/:invide_id', function(req, res) {
 		} else {
 			invite['accepted'] = true;
 			invite.save();
+			res.send(200);
 		}
 	});
-	res.send(200);
 });
 
 var PORT_NUM = process.env.PORT || 3000
