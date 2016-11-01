@@ -79,7 +79,7 @@ app.post('/sendSMSInvite/:invite_id', function(req, res) {
 	
 });
 
-app.post('/acceptInvite/:invide_id', function(req, res) {
+app.post('/acceptInvite/:invite_id', function(req, res) {
 	schema.Invite.findById(req.params.invite_id, function(err, invite) {
 		if (err) {
 			console.log(err);
