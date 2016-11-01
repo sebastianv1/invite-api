@@ -45,7 +45,8 @@ app.post('/sendEmailInvite/:invite_id', function(req, res) {
 			console.log(err);
 			res.send(500);			// TODO: Implement formal error codes. Might just be able to send err from callback
 		} else {
-			var body_html = invite.inviter + ' has invited you to Gigster! <br>Accept the invitation by clicking <a href="https://refer-api.herokuapp.com/acceptInvite"' + invite._id + '">here</a>';
+			console.log(invite);
+			var body_html = invite.inviter + ' has invited you to Gigster! <br>Accept the invitation by clicking <a href="https://refer-api.herokuapp.com/acceptInvite/"' + invite._id + '">here</a>';
 			var mailOptions = {
     			to: invite.invitee, 
     			subject: 'Join Gigster!',
