@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+app.use(express.static(__dirname + '/public'));
 
 var schema = require('./schema');
 var mongoose = require('mongoose');
@@ -44,7 +45,7 @@ app.post('/sendEmailInvite/:invite_id', function(req, res) {
 			console.log(err);
 			res.send(500);			// TODO: Implement formal error codes. Might just be able to send err from callback
 		} else {
-			var body_html = invite.inviter + ' has invited you to Gigster! Accept the inviation by clicking <a href="/acceptInvite/"' + invite._id + '">here</a>';
+			var body_html = invite.inviter + ' has invited you to Gigster! <br>Accept the inviation by clicking <a href="https://refer-api.herokuapp.com/acceptInvite"' + invite._id + '">here</a>';
 			var mailOptions = {
     			to: invite.invitee, 
     			subject: 'Join Gigster!',
@@ -85,7 +86,7 @@ app.post('/acceptInvite/:invide_id', function(req, res) {
 		} else {
 			invite['accepted'] = true;
 			invite.save();
-			res.send(200);
+			res.sendFile(__dirname + '/public/thanks.html');
 		}
 	});
 });
